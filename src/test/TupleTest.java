@@ -10,6 +10,15 @@ import hw1.Tuple;
 import hw1.TupleDesc;
 import hw1.Type;
 
+
+import org.junit.Test;
+
+import hw1.IntField;
+import hw1.StringField;
+import hw1.Tuple;
+import hw1.TupleDesc;
+import hw1.Type;
+
 public class TupleTest {
 
 	@Test

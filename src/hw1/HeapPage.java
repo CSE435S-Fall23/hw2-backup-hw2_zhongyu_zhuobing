@@ -1,4 +1,11 @@
 package hw1;
+/*
+ * 
+ * HW2. HeapPage for Zhongyu Luo and Zhuobing Du
+ * 
+ * 
+ */
+
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -6,9 +13,9 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
 public class HeapPage {
 
 	private int id;
@@ -46,7 +53,7 @@ public class HeapPage {
 
 	public int getId() {
 		//your code here
-		return 0;
+		return this.id;
 	}
 
 	/**
@@ -56,7 +63,9 @@ public class HeapPage {
 	 */
 	public int getNumSlots() {
 		//your code here
-		return 0;
+		int num = (4096*8)/(this.td.getSize()*8+1);
+		return num;
+		
 	}
 
 	/**
@@ -65,7 +74,7 @@ public class HeapPage {
 	 */
 	private int getHeaderSize() {        
 		//your code here
-		return 0;
+		return (int)Math.ceil((double)this.numSlots/8);
 	}
 
 	/**
@@ -75,7 +84,10 @@ public class HeapPage {
 	 */
 	public boolean slotOccupied(int s) {
 		//your code here
-		return false;
+		int byteIndex = s / 8;
+	    int bitIndex = s % 8;
+	    return (header[byteIndex] & (1 << bitIndex)) != 0;
+		
 	}
 
 	/**
@@ -85,6 +97,13 @@ public class HeapPage {
 	 */
 	public void setSlotOccupied(int s, boolean value) {
 		//your code here
+		int bi = s / 8;
+	    int bti = s % 8;
+	    if (value) {
+	        header[bi] |= (1 << bti);
+	    } else {
+	        header[bi] &= ~(1 << bti);
+	    }
 	}
 	
 	/**
@@ -95,8 +114,27 @@ public class HeapPage {
 	 */
 	public void addTuple(Tuple t) throws Exception {
 		//your code here
+		for (int s = 0; s < numSlots; s++) {
+	        if (!slotOccupied(s)) {
+	            tuples[s] = t;
+	            setSlotOccupied(s, true);
+	            
+	            return;
+	        }
+	    }
+	    throw new Exception("Page is full");
 	}
 
+	
+	public boolean isnotfull() {
+	    for (int i = 0; i < this.numSlots; i++) {
+	        if (!slotOccupied(i)) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	/**
 	 * Removes the given Tuple from the page. If the page id from the tuple does not match this page, throw
 	 * an exception. If the tuple slot is already empty, throw an exception
@@ -105,6 +143,14 @@ public class HeapPage {
 	 */
 	public void deleteTuple(Tuple t) {
 		//your code here
+		if(t.getPid() != this.id) {
+			throw new NoSuchElementException("page id dismatch.");
+		}
+		if(this.header[t.getId()] == 0) {
+			throw new NoSuchElementException("tuple does not exist.");
+		}
+		this.header[t.getId()] = 0;
+		this.tuples[t.getId()] = null;
 	}
 	
 	/**
@@ -232,6 +278,25 @@ public class HeapPage {
 	 */
 	public Iterator<Tuple> iterator() {
 		//your code here
-		return null;
+		return new Iterator<Tuple>() {
+	        private int cid = 0;
+
+	        @Override
+	        public boolean hasNext() {
+	            while (cid < tuples.length && (tuples[cid] == null || !slotOccupied(cid))) {
+	                cid++;
+	            }
+	            return cid < tuples.length;
+	        }
+
+	        @Override
+	        public Tuple next() {
+	            if (hasNext()) {
+	                return tuples[cid++];
+	            }
+	            throw new NoSuchElementException();
+	        }
+	    };
+		
 	}
 }

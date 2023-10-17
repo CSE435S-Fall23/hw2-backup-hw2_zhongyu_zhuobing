@@ -1,4 +1,11 @@
 package hw1;
+/*
+ * 
+ * HW2. IntField for Zhongyu Luo and Zhuobing Du
+ * 
+ * 
+ */
+
 
 import java.io.*;
 import java.nio.ByteBuffer;

@@ -1,4 +1,11 @@
 package hw1;
+/*
+ * 
+ * HW2. ColumnVisitor for Zhongyu Luo and Zhuobing Du
+ * 
+ * 
+ */
+
 
 import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.SelectExpressionItem;

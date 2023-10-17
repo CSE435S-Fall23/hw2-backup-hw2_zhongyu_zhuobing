@@ -1,5 +1,12 @@
 package hw1;
 
+/*
+ * 
+ * HW2.WhereExpressionVisitor for Zhongyu Luo and Zhuobing Du
+ * 
+ * 
+ */
+
 import net.sf.jsqlparser.expression.ExpressionVisitorAdapter;
 import net.sf.jsqlparser.expression.operators.relational.ComparisonOperator;
 import net.sf.jsqlparser.expression.operators.relational.EqualsTo;

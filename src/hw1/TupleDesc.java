@@ -1,6 +1,13 @@
 package hw1;
 import java.util.*;
 
+/*
+ * 
+ * HW2.TupDesc for Zhongyu Luo and Zhuobing Du
+ * 
+ * 
+ */
+
 /**
  * TupleDesc describes the schema of a tuple.
  */
@@ -18,15 +25,23 @@ public class TupleDesc {
      * @param fieldAr array specifying the names of the fields. Note that names may be null.
      */
     public TupleDesc(Type[] typeAr, String[] fieldAr) {
-    	//your code here
+    	
+    	// Your code here
+    	this.types = new Type[typeAr.length];
+		this.fields = new String[fieldAr.length];
+
+		for (int i = 0; i < typeAr.length; i++) {
+			this.types[i] = typeAr[i];
+			this.fields[i] = fieldAr[i];
+		}
     }
 
     /**
      * @return the number of fields in this TupleDesc
      */
     public int numFields() {
-        //your code here
-    	return 0;
+    	
+    	return this.fields.length;
     }
 
     /**
@@ -37,8 +52,11 @@ public class TupleDesc {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public String getFieldName(int i) throws NoSuchElementException {
-        //your code here
-    	return null;
+    	//your code here
+    	if(i>=this.fields.length || i < 0) {
+    		throw new NoSuchElementException("index " + i + " is not a valid field reference");
+      }
+    	return this.fields[i];
     }
 
     /**
@@ -49,8 +67,16 @@ public class TupleDesc {
      * @throws NoSuchElementException if no field with a matching name is found.
      */
     public int nameToId(String name) throws NoSuchElementException {
-        //your code here
-    	return 0;
+    	//your code here
+    	for (int i = 0; i < this.fields.length; i++) {
+    		if(this.fields[i] == null ) {
+    			return i;
+    		}
+    		else if (this.fields[i].equals(name)) {
+    			return i;
+    		}
+    			}
+    		throw new NoSuchElementException("No fueld with a matching name is found.");
     }
 
     /**
@@ -61,8 +87,12 @@ public class TupleDesc {
      * @throws NoSuchElementException if i is not a valid field reference.
      */
     public Type getType(int i) throws NoSuchElementException {
-        //your code here
-    	return null;
+    	//your code here
+    	if(i>=this.types.length || i < 0) {
+    		throw new NoSuchElementException("index " + i + " is not a valid field reference");
+    	}
+    	return this.types[i];  
+        
     }
 
     /**
@@ -71,7 +101,16 @@ public class TupleDesc {
      */
     public int getSize() {
     	//your code here
-    	return 0;
+    	int size = 0 ;
+    	for (int i = 0; i < this.types.length; i++) {
+    		if(this.types[i] == Type.INT) {
+    			size = size + 4;
+    		}
+    		else {
+    			size = size + 129;
+    		}
+    	}
+    	return size;
     }
 
     /**
@@ -84,7 +123,19 @@ public class TupleDesc {
      */
     public boolean equals(Object o) {
     	//your code here
-    	return false;
+    	TupleDesc anotherT = (TupleDesc) o;
+    	if (this.types.length != anotherT.types.length) {
+    		return false;
+    	}
+    	else {
+    		for(int i = 0; i < this.types.length; i++) {
+    			if (!this.types[i].equals(anotherT.types[i])) {
+    				return false;
+    			}
+    					
+    		}
+    		return true;
+    	}
     }
     
 
@@ -101,7 +152,18 @@ public class TupleDesc {
      * @return String describing this descriptor.
      */
     public String toString() {
-        //your code here
-    	return "";
+    	//your code here
+    	StringBuilder decriptor = new StringBuilder();
+    	for (int i = 0; i < this.types.length; i++) {
+    		if(i > 0) {
+    			decriptor.append(", ");
+    		}
+    		else {
+    			decriptor.append(this.types[i].toString());
+    			decriptor.append("(").append(this.fields[i]).append(")");
+    		}
+    	}
+    	return decriptor.toString();
+        
     }
 }

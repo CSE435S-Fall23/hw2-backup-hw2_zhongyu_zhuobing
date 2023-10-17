@@ -1,6 +1,17 @@
 package hw1;
+/*
+ * 
+ * HW2. Catalog for Zhongyu Luo and Zhuobing Du
+ * 
+ * 
+ */
+
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,8 +31,33 @@ public class Catalog {
      * Constructor.
      * Creates a new, empty catalog.
      */
+	private class Table{
+		private HeapFile file;
+		private String name;
+		private String pkey;
+		public Table(HeapFile file, String name, String pkey) {
+			this.file = file;
+			this.name = name;
+			this.pkey = pkey;
+		}
+		public String getName() {
+			return this.name;
+		}
+		public HeapFile getHFile() {
+			return this.file;
+		}
+		public String getPKey() {
+			return this.pkey;
+		}
+	}
+	private  Map<Integer, Table> idtoTable;
+	private  Map<String, Integer> nametoId;
+	
+	
     public Catalog() {
     	//your code here
+    	this.idtoTable = new HashMap<>();
+    	this.nametoId = new HashMap<>();
     }
 
     /**
@@ -34,6 +70,10 @@ public class Catalog {
      */
     public void addTable(HeapFile file, String name, String pkeyField) {
     	//your code here
+    	int id = file.getId();
+    	Table table = new Table(file, name, pkeyField);
+    	this.idtoTable.put(id, table);
+    	this.nametoId.put(name, id);
     }
 
     public void addTable(HeapFile file, String name) {
@@ -46,7 +86,13 @@ public class Catalog {
      */
     public int getTableId(String name) {
     	//your code here
-    	return 0;
+    	
+    	Integer id = this.nametoId.get(name);
+    	if(id == null) {
+    		throw new NoSuchElementException("table does not exist.");
+    	}
+    	return id;
+    	
     }
 
     /**
@@ -56,7 +102,11 @@ public class Catalog {
      */
     public TupleDesc getTupleDesc(int tableid) throws NoSuchElementException {
     	//your code here
-    	return null;
+    	Table table = this.idtoTable.get(tableid);
+    	if(table == null) {
+    		throw new NoSuchElementException("table does not exist.");
+    	}
+    	return table.getHFile().getTupleDesc();
     }
 
     /**
@@ -67,27 +117,39 @@ public class Catalog {
      */
     public HeapFile getDbFile(int tableid) throws NoSuchElementException {
     	//your code here
-    	return null;
+    	Table table = this.idtoTable.get(tableid);
+    	if (table == null) {
+    		throw new NoSuchElementException("table does not exist.");
+    	}
+    	return table.getHFile();
+    	
     }
 
     /** Delete all tables from the catalog */
     public void clear() {
     	//your code here
+    	this.idtoTable.clear();
+    	this.nametoId.clear();
     }
 
     public String getPrimaryKey(int tableid) {
     	//your code here
-    	return null;
+    	Table table = this.idtoTable.get(tableid);
+    	return table.getPKey();
+   
     }
 
     public Iterator<Integer> tableIdIterator() {
     	//your code here
-    	return null;
+    	return this.idtoTable.keySet().iterator();
+    
     }
 
     public String getTableName(int id) {
     	//your code here
-    	return null;
+    	Table table = this.idtoTable.get(id);
+    	return table.getName();
+    	
     }
     
     /**
